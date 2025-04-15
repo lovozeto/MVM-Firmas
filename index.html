@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Firmas de Correo - MVM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script type="module" src="https://esm.run/@material/web/all.js"></script>
+    <style type="text/css">
+        /* --- Esquemas de Color y Tipografía Base --- */
+        :root {
+          /* Tipografía Base de Referencia */
+          --md-ref-typeface-plain: 'Inter';
+          /* Asegurar que los nombres de familia se usen si MWC los necesita */
+          --md-sys-typescale-headline-large-font-family-name: 'Inter';
+          --md-sys-typescale-title-large-font-family-name: 'Inter';
+          --md-sys-typescale-label-large-font-family-name: 'Inter';
+          --md-sys-typescale-body-medium-font-family-name: 'Inter';
+          --md-sys-typescale-body-small-font-family-name: 'Inter';
+
+          /* Light Theme Colors */
+          --md-sys-color-primary: rgb(25 101 132); --md-sys-color-surface-tint: rgb(25 101 132); --md-sys-color-on-primary: rgb(255 255 255); --md-sys-color-primary-container: rgb(194 232 255); --md-sys-color-on-primary-container: rgb(0 30 43); --md-sys-color-secondary: rgb(112 93 13); --md-sys-color-on-secondary: rgb(255 255 255); --md-sys-color-secondary-container: rgb(252 225 134); --md-sys-color-on-secondary-container: rgb(35 27 0); --md-sys-color-tertiary: rgb(69 103 49); --md-sys-color-on-tertiary: rgb(255 255 255); --md-sys-color-tertiary-container: rgb(198 238 170); --md-sys-color-on-tertiary-container: rgb(8 33 0); --md-sys-color-error: rgb(186 26 26); --md-sys-color-on-error: rgb(255 255 255); --md-sys-color-error-container: rgb(255 218 214); --md-sys-color-on-error-container: rgb(65 0 2); --md-sys-color-background: rgb(246 250 254); --md-sys-color-on-background: rgb(23 28 31); --md-sys-color-surface: rgb(246 250 254); --md-sys-color-on-surface: rgb(23 28 31); --md-sys-color-surface-variant: rgb(220 227 233); --md-sys-color-on-surface-variant: rgb(64 72 77); --md-sys-color-outline: rgb(113 120 125); --md-sys-color-outline-variant: rgb(192 199 205); --md-sys-color-shadow: rgb(0 0 0); --md-sys-color-scrim: rgb(0 0 0); --md-sys-color-inverse-surface: rgb(44 49 52); --md-sys-color-inverse-on-surface: rgb(237 241 245); --md-sys-color-inverse-primary: rgb(142 207 242); --md-sys-color-primary-fixed: rgb(194 232 255); --md-sys-color-on-primary-fixed: rgb(0 30 43); --md-sys-color-primary-fixed-dim: rgb(142 207 242); --md-sys-color-on-primary-fixed-variant: rgb(0 77 103); --md-sys-color-secondary-fixed: rgb(252 225 134); --md-sys-color-on-secondary-fixed: rgb(35 27 0); --md-sys-color-secondary-fixed-dim: rgb(222 197 109); --md-sys-color-on-secondary-fixed-variant: rgb(85 69 0); --md-sys-color-tertiary-fixed: rgb(198 238 170); --md-sys-color-on-tertiary-fixed: rgb(8 33 0); --md-sys-color-tertiary-fixed-dim: rgb(170 210 144); --md-sys-color-on-tertiary-fixed-variant: rgb(46 79 28); --md-sys-color-surface-dim: rgb(214 218 222); --md-sys-color-surface-bright: rgb(246 250 254); --md-sys-color-surface-container-lowest: rgb(255 255 255); --md-sys-color-surface-container-low: rgb(240 244 248); --md-sys-color-surface-container: rgb(234 238 242); --md-sys-color-surface-container-high: rgb(229 233 237); --md-sys-color-surface-container-highest: rgb(223 227 231);
+
+          /* Definiciones de Typescale M3 (solo como referencia, aplicaremos con Tailwind) */
+          /* --md-sys-typescale-headline-large-font-family: var(--md-ref-typeface-plain, 'Inter'); ... etc */
+        }
+
+        @media (prefers-color-scheme: dark) {
+          :root {
+            --md-ref-typeface-plain: 'Inter';
+            /* Dark Theme Colors */
+            --md-sys-color-primary: rgb(142 207 242); --md-sys-color-surface-tint: rgb(142 207 242); --md-sys-color-on-primary: rgb(0 53 72); --md-sys-color-primary-container: rgb(0 77 103); --md-sys-color-on-primary-container: rgb(194 232 255); --md-sys-color-secondary: rgb(222 197 109); --md-sys-color-on-secondary: rgb(59 47 0); --md-sys-color-secondary-container: rgb(85 69 0); --md-sys-color-on-secondary-container: rgb(252 225 134); --md-sys-color-tertiary: rgb(170 210 144); --md-sys-color-on-tertiary: rgb(24 56 6); --md-sys-color-tertiary-container: rgb(46 79 28); --md-sys-color-on-tertiary-container: rgb(198 238 170); --md-sys-color-error: rgb(255 180 171); --md-sys-color-on-error: rgb(105 0 5); --md-sys-color-error-container: rgb(147 0 10); --md-sys-color-on-error-container: rgb(255 218 214); --md-sys-color-background: rgb(15 20 23); --md-sys-color-on-background: rgb(223 227 231); --md-sys-color-surface: rgb(15 20 23); --md-sys-color-on-surface: rgb(223 227 231); --md-sys-color-surface-variant: rgb(64 72 77); --md-sys-color-on-surface-variant: rgb(192 199 205); --md-sys-color-outline: rgb(138 146 151); --md-sys-color-outline-variant: rgb(64 72 77); --md-sys-color-shadow: rgb(0 0 0); --md-sys-color-scrim: rgb(0 0 0); --md-sys-color-inverse-surface: rgb(223 227 231); --md-sys-color-inverse-on-surface: rgb(44 49 52); --md-sys-color-inverse-primary: rgb(25 101 132); --md-sys-color-primary-fixed: rgb(194 232 255); --md-sys-color-on-primary-fixed: rgb(0 30 43); --md-sys-color-primary-fixed-dim: rgb(142 207 242); --md-sys-color-on-primary-fixed-variant: rgb(0 77 103); --md-sys-color-secondary-fixed: rgb(252 225 134); --md-sys-color-on-secondary-fixed: rgb(35 27 0); --md-sys-color-secondary-fixed-dim: rgb(222 197 109); --md-sys-color-on-secondary-fixed-variant: rgb(85 69 0); --md-sys-color-tertiary-fixed: rgb(198 238 170); --md-sys-color-on-tertiary-fixed: rgb(8 33 0); --md-sys-color-tertiary-fixed-dim: rgb(170 210 144); --md-sys-color-on-tertiary-fixed-variant: rgb(46 79 28); --md-sys-color-surface-dim: rgb(15 20 23); --md-sys-color-surface-bright: rgb(53 58 61); --md-sys-color-surface-container-lowest: rgb(10 15 18); --md-sys-color-surface-container-low: rgb(23 28 31); --md-sys-color-surface-container: rgb(27 32 35); --md-sys-color-surface-container-high: rgb(38 43 46); --md-sys-color-surface-container-highest: rgb(49 53 57);
+          }
+        }
+
+        /* Estilos base aplicando colores */
+        body {
+            /* Tipografía base aplicada con clases Tailwind en tag body */
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .main-container {
+             background-color: var(--md-sys-color-surface-container-low);
+             color: var(--md-sys-color-on-surface);
+             @apply max-w-4xl mx-auto rounded-lg shadow-lg; /* Padding en tag HTML */
+        }
+        /* Colores para títulos (tamaño/peso en clases HTML) */
+        h1, h2 {
+            color: var(--md-sys-color-primary);
+        }
+
+        /* Estilos MWC (Mantener override de fuente como fallback) */
+        md-filled-text-field, md-filled-button, md-primary-tab {
+            font-family: 'Inter', sans-serif !important; /* Fallback font */
+            /* El tamaño/peso debería venir de clases Tailwind si penetran, o de MWC defaults */
+        }
+        md-filled-text-field { width: 100%; margin-bottom: 16px; }
+        md-filled-text-field span[slot="suffix"] { font-size: 0.9em; color: var(--md-sys-color-on-surface-variant); }
+        md-filled-button { @apply w-full md:w-auto; }
+        md-tabs { margin-bottom: 16px; }
+
+        /* Estilos Firma Preview (sin cambios) */
+        #signaturePreview table, #signaturePreview td, #signaturePreview p, #signaturePreview b, #signaturePreview a, #signaturePreview span { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important; font-size: 12pt !important; color: #333333 !important; line-height: 18pt !important; }
+        #signaturePreview td { padding: 24pt !important; border-top: 4pt solid var(--md-sys-color-secondary) !important; background-color: #f5f5f5 !important; }
+        #signaturePreview td.logo-cell { padding: 24pt 0pt 24pt 24pt !important; width: 116pt !important; }
+        #signaturePreview table { border-collapse: collapse !important; width: 100% !important; border: 0pt !important; }
+        #signaturePreview a { text-decoration: none !important; }
+        #signaturePreview img { width: 100% !important; display: block; }
+        #signaturePreview br { display: block !important; content: "" !important; margin-top: 0 !important; line-height: 18pt !important; }
+        #signaturePreview p { margin: 0 !important; }
+        #signaturePreviewContainer { border: 1px solid var(--md-sys-color-outline-variant); background-color: var(--md-sys-color-surface-container); @apply p-1 rounded-md mb-6 overflow-x-auto; }
+
+        /* Estilos Toast Notification (sin cambios) */
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 20px; border-radius: 8px; background-color: var(--md-sys-color-inverse-surface); color: var(--md-sys-color-inverse-on-surface); box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease; }
+        #toast.show { opacity: 1; visibility: visible; bottom: 30px; }
+        #toast.error { background-color: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }
+
+        /* Estilos para Sección de Instrucciones (Tabs) */
+        #instructionsSection { margin-top: 32px; border-top: 1px solid var(--md-sys-color-outline-variant); padding-top: 24px; }
+        .tab-panel { display: none; padding: 16px 0; color: var(--md-sys-color-on-surface-variant); line-height: 1.6; } /* Tipografía via clases en HTML */
+        .tab-panel.active { display: block; }
+        .tab-panel p.intro-paragraph { color: var(--md-sys-color-on-surface); font-weight: 500; @apply mb-6 text-base; } /* Ajustar tamaño si es necesario */
+        /* Layout Instrucciones */
+        .instruction-text ol { list-style: decimal; margin-left: 20px; @apply mt-2; }
+        .instruction-text strong { color: var(--md-sys-color-on-surface); font-weight: 500; } /* Ajustar peso */
+        .instruction-image img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 8px; background-color: var(--md-sys-color-surface-variant); }
+        .instruction-image .placeholder-fallback { display: none; width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; background-color: var(--md-sys-color-surface-variant); align-items: center; justify-content: center; color: var(--md-sys-color-on-surface-variant); }
+        .instruction-image img:error + .placeholder-fallback { display: flex; }
+
+    </style>
+</head>
+<body class="p-0 font-normal text-sm leading-5" style="font-family: 'Inter', sans-serif;">
+
+    <div class="main-container p-4 md:p-8">
+        <div class="flex items-center justify-center gap-4 mb-8">
+            <img src="https://i.imghippo.com/files/Xu0Le1718744252.png" alt="Logo MVM" class="h-16">
+            <h1 class="text-3xl font-bold leading-tight">Generador de Firmas de Correo</h1>
+        </div>
+
+        <h2 class="text-xl font-bold leading-snug mt-8 mb-6 text-center">Ingresa tus datos</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-0 mb-6">
+            <div><md-filled-text-field label="Nombre Completo" id="name" name="name" required placeholder="Ej: Ana García"></md-filled-text-field></div>
+            <div><md-filled-text-field label="Cargo" id="title" name="title" required placeholder="Ej: Gerente de Proyectos"></md-filled-text-field></div>
+            <div><md-filled-text-field label="Teléfono" type="tel" id="phone" name="phone" required placeholder="Ej: 310 123 4567" supporting-text="Debe empezar por 3 y tener 10 dígitos."></md-filled-text-field></div>
+            <div><md-filled-text-field label="Tu usuario (antes de @)" id="emailUser" name="emailUser" required placeholder="Ej: ana.garcia"><span slot="suffix">@mvialmeta.com</span></md-filled-text-field></div>
+        </div>
+
+        <h2 class="text-xl font-bold leading-snug mt-6 mb-6">Vista Previa:</h2>
+        <div id="signaturePreviewContainer">
+             <div id="signaturePreview">
+                <div dir="auto" style="text-align: left; text-indent: 0pt; text-transform: none; white-space: normal; word-spacing: 0pt; text-decoration: none; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+                    <table class="x_emailContent" style="border: 0pt; width: 100%; font-size: 12pt; border-collapse: collapse;">
+                        <tbody> <tr class="x_emailFooter" style="border: 0pt; line-height: 16pt; padding: 24pt"> <td class="x_footer logo-cell" style="padding: 24pt 0pt 24pt 24pt; border-top: 4pt solid var(--md-sys-color-secondary); background-color: #f5f5f5; width: 116pt;"> <img style="width: 100%; display: block;" src="https://i.imghippo.com/files/Xu0Le1718744252.png" alt="Logo MVM"> </td> <td class="x_footer" style="padding: 24pt; border-top: 4pt solid var(--md-sys-color-secondary); background-color: #f5f5f5;"> <p style="color: #333333 !important; line-height: 18pt; margin: 0;"> Atentamente,<br aria-hidden="true" style="line-height: 18pt !important;"><br aria-hidden="true" style="line-height: 18pt !important;"> <b> <span id="previewName">Tu Nombre</span><br aria-hidden="true" style="line-height: 18pt !important;"> <span id="previewTitle">Tu Cargo</span><br aria-hidden="true" style="line-height: 18pt !important;"> MVM </b> <br aria-hidden="true" style="line-height: 18pt !important;"> <a id="previewPhoneLink" href="tel:+57" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable" style="text-decoration: none; color: #333333 !important" data-linkindex="0"> <span id="previewPhone">Tu Teléfono</span> </a> <br aria-hidden="true" style="line-height: 18pt !important;"> <a id="previewEmailLink" href="mailto:" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable" style="text-decoration: none; color: #333333 !important" data-linkindex="1"> <span id="previewEmail">tu.correo@mvialmeta.com</span> </a> <br aria-hidden="true" style="line-height: 18pt !important;"> <a href="http://www.mvialmeta.com/" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable" style="text-decoration: none; color: #333333 !important" data-linkindex="2"> www.mvialmeta.com </a> </p> </td> </tr> </tbody>
+                    </table>
+                 </div>
+             </div>
+        </div>
+
+        <div class="text-center mt-4"> <md-filled-button id="copyButton"> Copiar Firma </md-filled-button> </div>
+
+        <div id="instructionsSection">
+             <h2 class="text-xl font-bold leading-snug mt-6 mb-6">Cómo agregar tu firma</h2>
+
+            <md-tabs aria-label="Instrucciones por cliente de correo">
+                <md-primary-tab id="tab-gmail-web" aria-controls="panel-gmail-web"> Gmail (Web) </md-primary-tab>
+                <md-primary-tab id="tab-gmail-mobile" aria-controls="panel-gmail-mobile"> Gmail (Móvil) </md-primary-tab>
+                <md-primary-tab id="tab-mail-ios" aria-controls="panel-mail-ios"> Mail (iOS) </md-primary-tab>
+            </md-tabs>
+
+            <div id="panel-gmail-web" role="tabpanel" aria-labelledby="tab-gmail-web" class="tab-panel active text-sm leading-relaxed">
+                <p class="intro-paragraph">Para agregar la firma a Gmail (Web) sigue estos pasos:</p>
+                <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                    <div class="instruction-text"> <p><strong>Paso 1:</strong> Ve a Gmail y haz clic en Configuración (engranaje).</p> </div>
+                    <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/600x337/e0e0e0/757575?text=Paso+1+Imagen" alt="Imagen Paso 1 Gmail Web" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 1]</div> </div>
+                </div>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                    <div class="instruction-text"> <p><strong>Paso 2:</strong> Clic en "Ver todos los ajustes".</p> </div>
+                    <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/600x337/e0e0e0/757575?text=Paso+2+Imagen" alt="Imagen Paso 2 Gmail Web" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 2]</div> </div>
+                </div>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                    <div class="instruction-text"> <p><strong>Paso 3:</strong> En "General", busca "Firma" y haz clic en "+ Crear nueva".</p> </div>
+                     <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/600x337/e0e0e0/757575?text=Paso+3+Imagen" alt="Imagen Paso 3 Gmail Web" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 3]</div> </div>
+                </div>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                    <div class="instruction-text"> <p><strong>Paso 4:</strong> Nombra tu firma y pégala (Ctrl+V / Cmd+V) en el cuadro.</p> </div>
+                     <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/600x337/e0e0e0/757575?text=Paso+4+Imagen" alt="Imagen Paso 4 Gmail Web" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 4]</div> </div>
+                </div>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                     <div class="instruction-text"> <p><strong>Paso 5:</strong> Configura los valores predeterminados y guarda los cambios al final.</p> <p class="mt-2"><em>Nota: Revisa el formato en Gmail antes de guardar.</em></p> </div>
+                     <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/600x337/e0e0e0/757575?text=Paso+5+Imagen" alt="Imagen Paso 5 Gmail Web" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 5]</div> </div>
+                </div>
+            </div>
+
+            <div id="panel-gmail-mobile" role="tabpanel" aria-labelledby="tab-gmail-mobile" class="tab-panel text-sm leading-relaxed">
+                 <p class="intro-paragraph">Para agregar la firma a Gmail (Móvil) sigue estos pasos:</p>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                     <div class="instruction-text"> <p><strong>Paso 1:</strong> Abre la app Gmail y ve a Menú > Ajustes.</p> </div>
+                     <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/300x533/e0e0e0/757575?text=Paso+1+Imagen" alt="Imagen Paso 1 Gmail Móvil" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 1]</div> </div>
+                </div>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                     <div class="instruction-text"> <p><strong>Paso 2:</strong> Selecciona tu cuenta y busca "Firma para móviles".</p> </div>
+                     <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/300x533/e0e0e0/757575?text=Paso+2+Imagen" alt="Imagen Paso 2 Gmail Móvil" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 2]</div> </div>
+                </div>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                     <div class="instruction-text"> <p><strong>Paso 3:</strong> Pega la firma copiada y actívala si es necesario.</p> <p class="mt-2"><em>Nota: El formato HTML puede ser limitado en móviles.</em></p> </div>
+                     <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/300x533/e0e0e0/757575?text=Paso+3+Imagen" alt="Imagen Paso 3 Gmail Móvil" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 3]</div> </div>
+                </div>
+            </div>
+
+            <div id="panel-mail-ios" role="tabpanel" aria-labelledby="tab-mail-ios" class="tab-panel text-sm leading-relaxed">
+                 <p class="intro-paragraph">Para agregar la firma a Mail (iOS) sigue estos pasos:</p>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                    <div class="instruction-text"> <p><strong>Paso 1:</strong> Ve a Ajustes > Mail > Firma.</p> </div>
+                     <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/300x533/e0e0e0/757575?text=Paso+1+Imagen" alt="Imagen Paso 1 Mail iOS" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 1]</div> </div>
+                </div>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                    <div class="instruction-text"> <p><strong>Paso 2:</strong> Selecciona la cuenta, borra la firma actual y pega la nueva.</p> </div>
+                     <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/300x533/e0e0e0/757575?text=Paso+2+Imagen" alt="Imagen Paso 2 Mail iOS" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 2]</div> </div>
+                </div>
+                 <div class="instruction-step grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-8">
+                     <div class="instruction-text"> <p><strong>Paso 3 (¡Importante!):</strong> Agita el dispositivo y toca "Deshacer cambio de atributos" para mantener el formato HTML.</p> </div>
+                      <div class="instruction-image"> <img class="w-full h-auto rounded-lg" src="https://placehold.co/300x533/e0e0e0/757575?text=Paso+3+Imagen" alt="Imagen Paso 3 Mail iOS" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="placeholder-fallback text-xs">[Imagen Paso 3]</div> </div>
+                </div>
+            </div>
+
+        </div> </div> <div id="toast">Mensaje Toast</div>
+
+
+    <script type="module">
+        // --- Definición de Funciones ---
+        function validateName(name) { return /^[a-zA-ZÀ-ÿ\u00f1\u00d1].*[a-zA-ZÀ-ÿ\u00f1\u00d1\s]$/.test(name.trim()); }
+        function validateTitle(title) { return /^[a-zA-ZÀ-ÿ\u00f1\u00d1].*[a-zA-ZÀ-ÿ\u00f1\u00d1\s]$/.test(title.trim()); }
+        function validatePhone(phone) { const digits = phone.replace(/\s/g, ''); return /^[3]\d{9}$/.test(digits); }
+        function validateEmailUser(user) { return /^[a-zA-Z0-9._%+-]+$/.test(user.trim()); }
+        function formatPhoneNumber(value) { const digits = value.replace(/[^\d]/g, ''); const len = digits.length; if (len === 0) return ''; if (len <= 3) return digits; if (len <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`; return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 10)}`; }
+
+        let fieldValidity = { name: false, title: false, phone: false, emailUser: false };
+        let toastTimeout;
+        const fixedEmailDomain = '@mvialmeta.com';
+        const colombiaPrefix = '+57';
+
+        function checkOverallValidity() {
+            const copyButton = document.getElementById('copyButton');
+            const isFormValid = Object.values(fieldValidity).every(status => status === true);
+            if(copyButton) copyButton.disabled = !isFormValid;
+        }
+
+        function validateSingleField(field) {
+            if (!field) return;
+            let isValid = false;
+            let errorMessage = '';
+            const value = field.value.trim();
+            const fieldId = field.id;
+
+            switch (fieldId) {
+                case 'name': isValid = validateName(value); errorMessage = 'El nombre debe empezar y terminar con una letra.'; break;
+                case 'title': isValid = validateTitle(value); errorMessage = 'El cargo debe empezar y terminar con una letra.'; break;
+                case 'phone': isValid = validatePhone(field.value); errorMessage = field.supportingText; break;
+                case 'emailUser': isValid = validateEmailUser(value); errorMessage = 'Formato de usuario de correo inválido.'; break;
+            }
+            fieldValidity[fieldId] = isValid;
+            field.error = !isValid;
+            field.errorText = (!isValid && value !== '') ? errorMessage : '';
+            checkOverallValidity();
+        }
+
+        function updatePreviewText() {
+            const nameField = document.getElementById('name');
+            const titleField = document.getElementById('title');
+            const phoneField = document.getElementById('phone');
+            const emailUserField = document.getElementById('emailUser');
+            const previewName = document.getElementById('previewName');
+            const previewTitle = document.getElementById('previewTitle');
+            const previewPhone = document.getElementById('previewPhone');
+            const previewEmail = document.getElementById('previewEmail');
+            const previewPhoneLink = document.getElementById('previewPhoneLink');
+            const previewEmailLink = document.getElementById('previewEmailLink');
+
+            const name = nameField?.value.trim() || 'Tu Nombre';
+            const title = titleField?.value.trim() || 'Tu Cargo';
+            const phoneVal = phoneField?.value || '';
+            const phoneRaw = phoneVal.replace(/\s/g, '');
+            const phoneFormatted = formatPhoneNumber(phoneVal) || 'Tu Teléfono';
+            const emailUser = emailUserField?.value.trim();
+            const email = emailUser ? emailUser + fixedEmailDomain : 'tu.correo' + fixedEmailDomain;
+
+            if(previewName) previewName.textContent = name;
+            if(previewTitle) previewTitle.textContent = title;
+            if(previewPhone) previewPhone.textContent = phoneFormatted;
+            if(previewEmail) previewEmail.textContent = email;
+
+            const phoneLinkValue = phoneRaw ? colombiaPrefix + phoneRaw : '';
+            if(previewPhoneLink) previewPhoneLink.href = phoneLinkValue ? 'tel:' + phoneLinkValue : '#';
+            if(previewEmailLink) previewEmailLink.href = emailUser ? 'mailto:' + email : '#';
+        }
+
+        function showToast(message, isError = false) {
+            const toastElement = document.getElementById('toast');
+            if (!toastElement) return;
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastElement.textContent = message;
+            toastElement.classList.toggle('error', isError);
+            toastElement.classList.add('show');
+            toastTimeout = setTimeout(() => { toastElement.classList.remove('show'); }, 3000);
+        }
+
+        // --- Función para manejar cambio de Tabs ---
+        function handleTabChange(event) {
+            const tabsComponent = event.currentTarget;
+            const activeTab = tabsComponent.activeTab;
+
+            // console.log('Tab change event fired.');
+            // console.log('Active tab component:', activeTab);
+
+            if (!activeTab) {
+                 // console.log('No active tab found.');
+                 return;
+            }
+
+            const controlsPanelId = activeTab.getAttribute('aria-controls');
+            // console.log('Controls panel ID:', controlsPanelId);
+
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            tabPanels.forEach(panel => {
+                if (panel.id === controlsPanelId) {
+                    panel.classList.add('active');
+                    // console.log('Activated panel:', panel.id);
+                } else {
+                    panel.classList.remove('active');
+                }
+            });
+        }
+
+
+        async function copySignature() {
+            const nameField = document.getElementById('name');
+            const titleField = document.getElementById('title');
+            const phoneField = document.getElementById('phone');
+            const emailUserField = document.getElementById('emailUser');
+            const copyButton = document.getElementById('copyButton');
+            const signaturePreview = document.getElementById('signaturePreview');
+
+            validateSingleField(nameField); validateSingleField(titleField); validateSingleField(phoneField); validateSingleField(emailUserField);
+
+            if (!copyButton || copyButton.disabled) {
+                 showToast('Por favor, corrige los errores en el formulario.', true);
+                 return;
+            }
+            if (!signaturePreview) { showToast('Error: No se encontró la vista previa.', true); return; }
+
+            try {
+                const elementsToStyle = signaturePreview.querySelectorAll('table, td, p, b, a, span, br');
+                elementsToStyle.forEach(el => {
+                    const currentSecondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-secondary').trim();
+                    if (el.tagName === 'TD') { el.style.borderTopColor = currentSecondaryColor; }
+                    if (el.tagName === 'TD' && !el.classList.contains('logo-cell')) { el.style.padding = '24pt'; el.style.backgroundColor = '#f5f5f5'; }
+                    if (el.tagName === 'TD' && el.classList.contains('logo-cell')) { el.style.padding = '24pt 0pt 24pt 24pt'; el.style.backgroundColor = '#f5f5f5'; el.style.width = '116pt'; }
+                    if (['P', 'B', 'A', 'SPAN'].includes(el.tagName)) { el.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif"; el.style.fontSize = '12pt'; el.style.color = '#333333'; el.style.lineHeight = '18pt'; }
+                    if (el.tagName === 'A') { el.style.textDecoration = 'none'; }
+                    if (el.tagName === 'BR') { el.style.lineHeight = '18pt'; }
+                    if (el.tagName === 'TABLE') { el.style.borderCollapse = 'collapse'; el.style.width = '100%'; el.style.fontSize = '12pt'; el.style.border = '0pt'; }
+                });
+                const signatureHTML = signaturePreview.innerHTML;
+                const blob = new Blob([signatureHTML], { type: 'text/html' });
+                const clipboardItem = new ClipboardItem({ 'text/html': blob });
+                await navigator.clipboard.write([clipboardItem]);
+                showToast('¡Se ha copiado la firma! Puedes pegarla en tu app de correo');
+            } catch (err) { console.error('Error al copiar la firma: ', err); showToast('Error al copiar. Intenta manualmente.', true); }
+        }
+
+        // --- Inicialización y Event Listeners ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // console.log('DOM fully loaded and parsed');
+
+            const nameField = document.getElementById('name');
+            const titleField = document.getElementById('title');
+            const phoneField = document.getElementById('phone');
+            const emailUserField = document.getElementById('emailUser');
+            const copyButton = document.getElementById('copyButton');
+            const tabs = document.querySelector('md-tabs');
+            const firstPanel = document.querySelector('.tab-panel');
+
+            // Validar en blur
+            if(nameField) nameField.addEventListener('blur', (e) => validateSingleField(e.target));
+            if(titleField) titleField.addEventListener('blur', (e) => validateSingleField(e.target));
+            if(emailUserField) emailUserField.addEventListener('blur', (e) => validateSingleField(e.target));
+            if(phoneField) phoneField.addEventListener('blur', (e) => validateSingleField(e.target));
+
+            // Actualizar preview en input
+            if(nameField) nameField.addEventListener('input', updatePreviewText);
+            if(titleField) titleField.addEventListener('input', updatePreviewText);
+            if(emailUserField) emailUserField.addEventListener('input', updatePreviewText);
+
+            // Formatear teléfono mientras se escribe
+            if(phoneField) phoneField.addEventListener('input', (e) => {
+                const target = e.target;
+                const cursorPosition = target.selectionStart;
+                const originalValue = target.value;
+                const digitsOnly = originalValue.replace(/[^\d]/g, '').slice(0, 10);
+                const formattedValue = formatPhoneNumber(digitsOnly);
+                target.value = formattedValue;
+                if (formattedValue.length > originalValue.length) { requestAnimationFrame(() => { target.setSelectionRange(formattedValue.length, formattedValue.length); }); }
+                else if (cursorPosition !== null) { requestAnimationFrame(() => { target.setSelectionRange(cursorPosition, cursorPosition); }); }
+                updatePreviewText();
+                if (formattedValue.length === 12) { validateSingleField(target); }
+                else { target.error = false; target.errorText = ''; fieldValidity.phone = false; checkOverallValidity(); }
+            });
+
+            // Listener para cambio de Tabs
+            if (tabs) {
+                 // console.log('Adding change listener to tabs');
+                 tabs.addEventListener('change', handleTabChange); // Usar 'change'
+            } else {
+                console.error("Elemento md-tabs no encontrado.");
+            }
+
+            // Listener para el botón de copiar
+            if(copyButton) copyButton.addEventListener('click', copySignature);
+
+            // Inicialización
+            updatePreviewText();
+            checkOverallValidity();
+            if (firstPanel) { firstPanel.classList.add('active'); }
+            // console.log('Initialization complete');
+        });
+
+    </script>
+
+</body>
+</html>
